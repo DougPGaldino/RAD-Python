@@ -1,0 +1,15 @@
+Atividade verificadora de aprendizagem
+
+Em grupos os alunos devem considerar 2 cenários : (i) sistema de registro de notas de alunos para
+uma instituição de ensino pequena com algumas centenas de alunos e (ii) sistema de registro de notas
+de alunos para uma instituição de ensino com centenas de milhares de alunos e unidades espalhadas
+por todo o país. Para cada um destes cenários, o grupo deve elencar as vantagens e desvantagens do
+uso de RAD para o cenário, e decidir se eles recomendam o uso de RAD para o cenário.
+
+Resposta:
+Acredito que no cenário I o RAD poderia se encaixar, um sistema relativamente simples para uma instituição pequena utilizando o RAD seria entregue bem rapidamente, e posteriormente se a instituição crescesse ou o código precisasse de alteração isso poderia ser resolvido de forma rápida.
+No cenário II entretanto eu acredito que um modelo mais tradicional ao invés do RAD seria mais adequado, um sistema não tão prototipado e sim algo sólido, mesmo que demande mais tempo.
+
+Questão 01: Letra E
+
+Questão 02: Letra A
