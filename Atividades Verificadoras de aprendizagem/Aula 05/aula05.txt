@@ -1,0 +1,87 @@
+Aula05 - Atividade
+Voltando ao cenário que trata de um sistema de registro de notas de alunos em uma pequena instituição de
+ensino, criar o banco de dados no SGBD de sua escolha, e implementar os métodos conectores para que o
+sistema possa se conectar ao SGBD'''
+#biblioteca
+import sqlite3 as conector #apelido
+def criar_tabelas():
+try:
+ #abertura da conexão
+conexao = conector.connect('registro_notas.db')
+ #aquisição de um cursor
+cursor = conexao.cursor()
+ #execução de comandos SQL
+sql1 = '''CREATE TABLE if not exists tbaluno (
+matricula INTEGER NOT NULL,
+nome TEXT NOT NULL,
+curso TEXT NOT NULL,
+ PRIMARY KEY (matricula)
+ );'''
+sql2 = '''CREATE TABLE if not exists tbnota (
+item INTEGER PRIMARY KEY AUTOINCREMENT,
+valor FLOAT NOT NULL,
+matricula INTEGER NOT NULL,
+ FOREIGN KEY (matricula) REFERENCES tbaluno(matricula)
+ );'''
+cursor.execute(sql1)
+cursor.execute(sql2)
+ #efetivação do comando
+conexao.commit()
+print('Banco de dados ok')
+except conector.DatabaseError as err:
+print('Erro de banco de dados',err)
+finally:
+ #fechamento das conexões
+if(conexao):
+cursor.close()
+conexao.close()
+#fim da função
+criar_tabelas()
+
+Atividade Autônoma Aura:
+Questão 1) O psycopg2 é um framework para trabalhar com o Postgres no Python. Abaixo,
+apresentamos um programa que faz a inserção de dados na tabela AGENDA:
+01 import psycopg2
+02 conn = psycopg2.connect(database = "postgres", user = "postgres", password = " senha123", host =
+"127.0.0.1", port = "5432")
+03 print ("Conexão com o Banco de Dados aberta com sucesso!")
+04 cur = conn.cursor()
+05 cur.execute("""INSERT INTO public."AGENDA" ("id", "nome", "telefone") VALUES (1, 'Pessoa1',
+'02199999999')""")
+06 conn.commit()
+07 print("Inserção realizada com sucesso!");
+08 conn.close()
+
+A respeito do código apresentado, selecione a opção correta.
+a) A única forma de executar uma operação de inserção em uma tabela é conforme a linha 5.
+b) Se o comando da linha 8 for removido, o programa vai funcionar corretamente.
+c) Esse programa está preparado para tratar exceções de conexão com o banco de dados.
+d) O cursor que é instanciado na linha 4 é fundamental para que o programa possa funcionar
+corretamente.
+e) Esse código está implementado usando programação orientada a objetos
+
+Gabarito: A alternativa CORRETA é a letra “D”. A operação de inserção é executada com o cursor,
+portanto ele é fundamental para o funcionamento correto do programa.
+Tópico de aprendizagem: FRAMEWORKS E BIBLIOTECAS PARA GERENCIAMENTO DE
+BANCO DE DADOS.
+Referência: Conteúdo digital da disciplina, Tema "Python com banco de dados", Módulo 1 -
+"Frameworks e bibliotecas para gerenciamento de banco de dados". 
+
+Questão 2) O Python possui diversos frameworks para fazer operações em um banco de dados. Entre
+esses frameworks está o psycopg2 que faz a interface com o Postgres. Em relação ao psycopg2,
+selecione a opção correta.
+a) Permite a criação de tabelas e a execução dos comandos de inserção, exclusão, modificação e
+consulta no banco de dados.
+b) Faz interface com outros Sistemas Gerenciadores de Banco de Dados (SGBDs), como o MySQL e
+Oracle.
+c)Para ser utilizado, é fundamental programar orientado a objetos.
+d)Os programas que utilizam o psycopg2 só vão funcionar se as exceções forem tratadas explicitamente.
+e)Os programas que utilizam o psycopg2 devem estar implementados seguindo a programação
+estruturada.
+Gabarito: A alternativa CORRETA é a letra “A”. O psycopg2 é um framework robusto que faz a
+interface do Python com o Postgres. Com ele, é possível criar tabelas, como executar as operações de
+inserção, exclusão, modificação e consulta em um banco de dados.
+Tópico de aprendizagem: FRAMEWORKS E BIBLIOTECAS PARA GERENCIAMENTO DE
+BANCO DE DADOS.
+Referência: Conteúdo digital da disciplina, Tema "Python com banco de dados", Módulo 1 -
+"Frameworks e bibliotecas para gerenciamento de banco de dados". 

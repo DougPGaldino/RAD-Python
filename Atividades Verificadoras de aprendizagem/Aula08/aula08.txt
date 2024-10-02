@@ -1,0 +1,153 @@
+Aula 08 - Atividade verificadora de aprendizagem:
+''' Aula08_atividade.py
+Voltando ao cenário que trata de um sistema de registro de notas de alunos
+em uma pequena instituição de ensino, implementar funcionalidades de
+consulta ao Banco de Dados:
+- Buscar os dados do aluno ao solicitar sua matrícula.
+- Listar todos os alunos de um determinado curso.
+- Mostrar as notas de todos os alunos, ordenados pelo nome.
+.
+'''
+#biblioteca
+import sqlite3 as conector #apelido
+def criar_tabela():
+ try:
+ #abertura da conexão
+ conexao = conector.connect('registro_notas.db')
+ #aquisição de um cursor
+ cursor = conexao.cursor()
+ #execução de comandos SQL
+ sql1 = '''CREATE TABLE if not exists tbaluno (
+ matricula INTEGER NOT NULL,
+ nome TEXT NOT NULL,
+ curso TEXT NOT NULL,
+ PRIMARY KEY (matricula)
+ );'''
+ sql2 = '''CREATE TABLE if not exists tbnota (
+ item INTEGER PRIMARY KEY AUTOINCREMENT,
+ valor FLOAT NOT NULL,
+ matricula INTEGER NOT NULL,
+ FOREIGN KEY (matricula) REFERENCES tbaluno(matricula)
+ );'''
+ cursor.execute(sql1)
+ cursor.execute(sql2)
+ #efetivação do comando
+ conexao.commit()
+ print('Banco de dados ok')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+def inserir_dados_alunos():
+ try:
+ #abertura da conexão
+ conexao = conector.connect('registro_notas.db')
+ #aquisição de um cursor
+ cursor = conexao.cursor()
+ #Criação dos dados de aluno
+ m = int(input('Digite a matrícula:'))
+ n = input('Digite o nome:')
+ c = input('Digite o curso:')
+ nota = float(input('Digite a nota:'))
+ #definição com query parameter
+ sql1 = '''INSERT INTO tbaluno (matricula, nome, curso)
+ VALUES (?,?,?);'''
+ sql2 = '''INSERT INTO tbnota (valor,matricula)
+ VALUES (?,?);'''
+ #execução com parâmetros
+ cursor.execute(sql1,(m,n,c))
+ cursor.execute(sql2,(nota,m))
+ #efetivação do comando
+ conexao.commit()
+ print('Dados inseridos!!!')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados: ',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+def alterar_dados():
+ try:
+ m = int(input('Digite a matrícula do aluno:'))
+ n = input('Digite o nome completo:')
+ c = input('Digite o novo curso:')
+ conexao = conector.connect('registro_notas.db')
+ cursor = conexao.cursor()
+ #definição do comando
+ comando = 'UPDATE tbaluno SET nome=?, curso=? WHERE matricula=?;'
+ #execução do comando
+ cursor.execute(comando,(n,c,m))
+ #efetivação do comando
+ conexao.commit()
+ print('Dados alterados!!!')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados: ',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+def excluir_dados():
+ try:
+ m = int(input('Digite a matrícula do aluno a excluir:'))
+ conexao = conector.connect('registro_notas.db')
+ cursor = conexao.cursor()
+ #definição do comando
+ comando1 = 'DELETE FROM tbnota WHERE matricula=?;'
+ comando2 = 'DELETE FROM tbaluno WHERE matricula=?;'
+ #execução do comando
+ cursor.execute(comando1,(m,))
+ cursor.execute(comando2,(m,))
+ #efetivação do comando
+ conexao.commit()
+ print('Registro excluído!!!')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados: ',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+#executar função
+criar_tabela()
+for n in range(1,4):
+ inserir_dados_alunos()
+alterar_dados()
+excluir_dados()
+#encerrando
+print("Fim do programa")
+
+
+Atividade Autônoma Aura:
+Questão 1) A linguagem de programação Python tem enorme facilidade e flexibilidade para a realização
+de consultas nos mais variados banco de dados. Qual comando abaixo é usado para rodar uma consulta:
+a) execute()
+b) rodar()
+c) executar()
+d) run()
+e) show() 
+Gabarito: A alternativa CORRETA é a letra “A”. As demais alternativas estão ERRADAS em razão de:
+O método execute() é o responsável pela execução dos comandos SQL.
+Tópico de aprendizagem: Recuperação de registros em tabelas.
+Referência: Conteúdo Digital, Tema "Python com Banco de Dados", Módulo 4 - Funcionalidades para
+recuperação de registros em tabelas".
+
+Questão 2) A linguagem de programação Python tem enorme facilidade e flexibilidade para a realização
+de consultas nos mais variados banco de dados.
+Após executar a solicitação da consulta deve processar o resultado através dos métodos:
+a. fetchone, fetcal e fetchmany
+b. fetread, fetchall e fetchmany
+c. fetchone, fetchall e fetchmany
+d. fetchone, fetchall e fetchmuch
+e. fetchone, fetchall e fetchwrite
+Gabarito: A alternativa CORRETA é a letra “C”. As demais alternativas estão ERRADAS em razão de:
+fetchall () para buscar todas as linhas.
+fetchone () para buscar uma única linha.
+fetchmany (SIZE) para buscar linhas limitadas.
+Tópico de aprendizagem: Recuperação de registros em tabelas.
+Referência: Conteúdo Digital, Tema "Python com Banco de Dados", Módulo 4 - Funcionalidades para
+recuperação de registros em tabelas".

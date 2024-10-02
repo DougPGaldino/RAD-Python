@@ -1,0 +1,152 @@
+Aula 07 - Atividade verificadora de aprendizagem:
+'''
+Aula07_atividade.py
+Voltando ao cenário que trata de um sistema de registro de notas de alunos
+em uma pequena instituição de ensino, implementar as funcionalidades de
+inserção, exclusão e modificação dos dados.
+'''
+#biblioteca
+import sqlite3 as conector #apelido
+def criar_tabela():
+ try:
+ #abertura da conexão
+ conexao = conector.connect('registro_notas.db')
+ #aquisição de um cursor
+ cursor = conexao.cursor()
+ #execução de comandos SQL
+ sql1 = '''CREATE TABLE if not exists tbaluno (
+ matricula INTEGER NOT NULL,
+ nome TEXT NOT NULL,
+ curso TEXT NOT NULL,
+ PRIMARY KEY (matricula)
+ );'''
+ sql2 = '''CREATE TABLE if not exists tbnota (
+ item INTEGER PRIMARY KEY AUTOINCREMENT,
+ valor FLOAT NOT NULL,
+ matricula INTEGER NOT NULL,
+ FOREIGN KEY (matricula) REFERENCES tbaluno(matricula)
+ );'''
+ cursor.execute(sql1)
+ cursor.execute(sql2)
+ #efetivação do comando
+ conexao.commit()
+ print('Banco de dados ok')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+def inserir_dados_alunos():
+ try:
+ #abertura da conexão
+ conexao = conector.connect('registro_notas.db')
+ #aquisição de um cursor
+ cursor = conexao.cursor()
+ #Criação dos dados de aluno
+ m = int(input('Digite a matrícula:'))
+ n = input('Digite o nome:')
+ c = input('Digite o curso:')
+ nota = float(input('Digite a nota:'))
+ #definição com query parameter
+ sql1 = '''INSERT INTO tbaluno (matricula, nome, curso)
+ VALUES (?,?,?);'''
+ sql2 = '''INSERT INTO tbnota (valor,matricula)
+ VALUES (?,?);'''
+ #execução com parâmetros
+ cursor.execute(sql1,(m,n,c))
+ cursor.execute(sql2,(nota,m)) 
+ #efetivação do comando
+ conexao.commit()
+ print('Dados inseridos!!!')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados: ',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+def alterar_dados():
+ try:
+ m = int(input('Digite a matrícula do aluno:'))
+ n = input('Digite o nome completo:')
+ c = input('Digite o novo curso:')
+ conexao = conector.connect('registro_notas.db')
+ cursor = conexao.cursor()
+ #definição do comando
+ comando = 'UPDATE tbaluno SET nome=?, curso=? WHERE matricula=?;'
+ #execução do comando
+ cursor.execute(comando,(n,c,m))
+ #efetivação do comando
+ conexao.commit()
+ print('Dados alterados!!!')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados: ',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+def excluir_dados():
+ try:
+ m = int(input('Digite a matrícula do aluno a excluir:'))
+ conexao = conector.connect('registro_notas.db')
+ cursor = conexao.cursor()
+ #definição do comando
+ comando1 = 'DELETE FROM tbnota WHERE matricula=?;'
+ comando2 = 'DELETE FROM tbaluno WHERE matricula=?;'
+ #execução do comando
+ cursor.execute(comando1,(m,))
+ cursor.execute(comando2,(m,))
+ #efetivação do comando
+ conexao.commit()
+ print('Registro excluído!!!')
+ except conector.DatabaseError as err:
+ print('Erro de banco de dados: ',err)
+ finally:
+ #fechamento das conexões
+ if(conexao):
+ cursor.close()
+ conexao.close()
+#executar função
+criar_tabela()
+for n in range(1,4):
+ inserir_dados_alunos()
+alterar_dados()
+excluir_dados()
+#encerrando
+print("Fim do programa")
+
+Atividade Autônoma Aura:
+Questão 1) A Linguagem de programação Python permite a inserção em massa de várias linhas em uma
+tabela de banco de dados usando uma única consulta SQL. Pode-se fazer isso usando uma consulta
+parametrizada e o comando:
+a. insertmany()
+b. execute()
+c. inserirmuitos()
+d. executemany()
+e. writeln()
+Gabarito: A alternativa CORRETA é a letra “D”. As demais alternativas estão ERRADAS em razão de:
+Método executemany (). Este método prepara uma operação de banco de dados (consulta ou comando) e
+a executa em todas as sequências de parâmetros ou mapeamentos encontrados na sequência
+seq_of_params.
+Tópico de aprendizagem: INSERÇÃO, REMOÇÃO E ATUALIZAÇÃO DE REGISTROS EM
+TABELAS.
+Referência: Conteúdo digital da disciplina, Tema "Python com banco de dados", Módulo 3 - "Inserção,
+remoção e atualização de registros em tabelas".
+Questão 2) Após a execução de comandos de manipulação tem-se que realizar a finalização da transação
+para isso usamos o comando:
+a. commit()
+b. rollback()
+c. persist()
+d. execute()
+e. run()
+Gabarito: A alternativa CORRETA é a letra “A”. As demais alternativas estão ERRADAS em razão de:
+Este método envia uma instrução ao servidor, confirmando a transação atual. Como, por padrão, o
+Conector / Python não se auto comita, é importante chamar esse método após cada transação que
+modifica os dados para tabelas que usam mecanismos de armazenamento transacional.
+Tópico de aprendizagem: INSERÇÃO, REMOÇÃO E ATUALIZAÇÃO DE REGISTROS EM
+TABELAS.
+Referência: Conteúdo digital da disciplina, Tema "Python com banco de dados", Módulo 3 - "Inserção,
+remoção e atualização de registros em tabelas". 
