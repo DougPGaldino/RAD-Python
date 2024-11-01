@@ -11,9 +11,7 @@ def Read():
     for item in ProponenteController.SelecionarTodos():
         costumerList.append([item.nome, item.idade, item.cpf, item.orgao, item.valor_contrato])
 
-    df = pd.DataFrame(
-    costumerList,
-    columns=['Nome', 'Idade', 'CPF', 'Órgão Público', 'Valor do Contrato']
-    )
-
-    st.table(df)
+    df = pd.DataFrame(costumerList,
+     columns=['Nome', 'Idade', 'CPF', 'Órgão Público', 'Valor do Contrato'])
+    
+    st.dataframe(df)  # Usar dataframe para uma tabela interativa

@@ -1,39 +1,29 @@
-import services.database as db
-import streamlit as st  # Adicionando import do Streamlit para exibir erros
+# ProponenteController.py
+from services.database import db  # Importa a instância de db diretamente
+import streamlit as st
 from models.proponente import Proponente
 
 def Incluir(proponente):
     try:
-        # Obtém a conexão e o cursor
-        con, cursor = db.conectar()
-        
-        # Insere o novo proponente no banco de dados
-        cursor.execute("""
-            INSERT INTO Proponente(proNome, proIdade, proCPF, proOrgao, proValorContrato) 
-            VALUES (?, ?, ?, ?, ?)""", (proponente.nome, proponente.idade, proponente.cpf, proponente.orgao, proponente.valor_contrato))
-        
-        # Confirma a transação
-        con.commit()
-        
+        cursor = db.conectar()  # Obtém o cursor da conexão ativa
+        query = """
+            INSERT INTO Proponente (proNome, proIdade, proCPF, proOrgao, proValorContrato)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (proponente.nome, proponente.idade, proponente.cpf, proponente.orgao, proponente.valor_contrato))
+        db.con.commit()  # Confirma a transação
+        print("Proponente inserido com sucesso!")
     except Exception as e:
-        st.error(f"Erro ao inserir proponente: {e}")  # Exibe o erro no Streamlit
-        
+        print(f"Erro ao inserir proponente: {e}")
     finally:
-        # Fecha a conexão após inserir os dados
-        con.close()
+        db.close()
 
 def SelecionarTodos():
     try:
-        # Obtém a conexão e o cursor
-        con, cursor = db.conectar()
+        cursor = db.conectar()
         
-        # Executa o comando SELECT
         cursor.execute("SELECT * FROM Proponente")
-        costumerList = []
-        
-        # Itera sobre as linhas do banco de dados e cria as instâncias de Proponente
-        for row in cursor.fetchall():
-            costumerList.append(Proponente(row[0], row[1], row[2], row[3], row[4], row[5]))  # Proponente instanciado corretamente
+        costumerList = [Proponente(*row) for row in cursor.fetchall()]
         
         return costumerList
     
@@ -42,5 +32,34 @@ def SelecionarTodos():
         return []
     
     finally:
-        # Fecha a conexão após a consulta
-        con.close()
+        db.close()
+
+def Deletar(id_proponente):
+    try:
+        db.conectar()  # Conecta ao banco de dados
+        query = "DELETE FROM Proponente WHERE id = %s"
+        db.cursor.execute(query, (id_proponente,))
+        db.con.commit()  # Salva as alterações
+        print("Proponente excluído com sucesso!")
+    except Exception as e:
+        print(f"Erro ao excluir proponente: {e}")
+    finally:
+        db.close()
+
+def Editar(proponente):
+    try:
+        db.conectar()
+        query = """
+            UPDATE Proponente
+            SET proNome = %s, proIdade = %s, proCPF = %s, proOrgao = %s, proValorContrato = %s
+            WHERE id = %s
+        """
+        db.cursor.execute(query, (proponente.nome, proponente.idade, proponente.cpf, proponente.orgao, proponente.valor_contrato, proponente.id))
+        db.con.commit()
+        print("Proponente atualizado com sucesso!")
+        return True  # Indica sucesso
+    except Exception as e:
+        print(f"Erro ao atualizar proponente: {e}")
+        return False  # Indica falha
+    finally:
+        db.close()
